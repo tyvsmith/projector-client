@@ -502,17 +502,27 @@ sealed class ClientState {
       is ClientAction.AddEvent -> {
         var event = action.event
 
+        fun addEvent() {
+          eventsToSend.add(event)
+          messagingPolicy.onAddEvent()
+        }
+
+        var latency = 0
+
         if (event is ClientKeyPressEvent) {
           val drawingResult = typing.addEventChar(event)
           if (drawingResult is Typing.DrawingResult.Drawn) {
             event = ClientSpeculativeKeyPressEvent(
               event, drawingResult.operationId, drawingResult.editorId, drawingResult.virtualOffset, drawingResult.selection)
-
+            latency = ParamsProvider.SPECULATIVE_TYPING_LATENCY
           }
         }
 
-        eventsToSend.add(event)
-        messagingPolicy.onAddEvent()
+        if (latency > 0) {
+          window.setTimeout(::addEvent, latency)
+        } else {
+          addEvent()
+        }
 
         this
       }

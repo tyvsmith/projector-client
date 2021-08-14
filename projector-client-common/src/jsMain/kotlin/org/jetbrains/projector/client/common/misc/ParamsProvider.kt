@@ -67,6 +67,7 @@ actual object ParamsProvider {
   private const val DEFAULT_BLOCK_CLOSING = true
   private val DEFAULT_TYPING_CLEAR_STRATEGY = TypingClearStrategy.SERVER_VALIDATION
   private const val DEFAULT_HIDE_MAIN_CANVAS_ON_SPECULATIVE_TYPING = false
+  private const val DEFAULT_SPECULATIVE_TYPING_LATENCY = 0
 
   val SYSTEM_SCALING_RATIO
     get() = window.devicePixelRatio  // get every time because it can be changed
@@ -104,6 +105,7 @@ actual object ParamsProvider {
   val LAYOUT_TYPE: LayoutType
   val TYPING_CLEAR_STRATEGY: TypingClearStrategy
   val HIDE_MAIN_CANVAS_ON_SPECULATIVE_TYPING: Boolean
+  val SPECULATIVE_TYPING_LATENCY: Int
   val SCALING_RATIO: Double
     get() = SYSTEM_SCALING_RATIO * USER_SCALING_RATIO
 
@@ -173,6 +175,7 @@ actual object ParamsProvider {
       }
       HIDE_MAIN_CANVAS_ON_SPECULATIVE_TYPING = searchParams.get("hideOnSpeculative")?.toBoolean()
                                                ?: DEFAULT_HIDE_MAIN_CANVAS_ON_SPECULATIVE_TYPING
+      SPECULATIVE_TYPING_LATENCY = searchParams.get("speculativeTypingLatency")?.toIntOrNull() ?: DEFAULT_SPECULATIVE_TYPING_LATENCY
     }
   }
 
