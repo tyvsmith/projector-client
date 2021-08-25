@@ -52,6 +52,7 @@ class MarkdownPanelManager(private val zIndexByWindowIdGetter: (Int) -> Int?, pr
 
     companion object {
 
+      // TODO support iframe reloading
       private fun createIFrame(openInExternalBrowser: (String) -> Unit) = (document.createElement("iframe") as HTMLIFrameElement).apply {
         style.apply {
           position = "fixed"
@@ -64,6 +65,13 @@ class MarkdownPanelManager(private val zIndexByWindowIdGetter: (Int) -> Int?, pr
         frameBorder = "0"
 
         document.body!!.appendChild(this)
+
+        // cancel auto-started load of about:blank in Firefox
+        // https://stackoverflow.com/questions/7828502/cannot-set-document-body-innerhtml-of-iframe-in-firefox
+        contentDocument!!.apply {
+          open()
+          close()
+        }
 
         // adopted from processLinks.js
         contentDocument!!.onclick = { e ->
