@@ -120,13 +120,17 @@ internal class PanelDelegate {
     backingComponent.setText(componentText)
   }
 
-  fun setCSS(inlineCss: String?, vararg fileUris: String?) {
+  fun setCSS(inlineCss: String?, cssFileUrls: List<String?>) {
     lastInlineCss = inlineCss
-    lastCssFileUrls = fileUris.toList()
+    lastCssFileUrls = cssFileUrls
 
     lastCssString = CssProcessor.makeCss(lastInlineCss, lastCssFileUrls)
 
     PanelUpdater.setCss(id)
+  }
+
+  fun setCSS(inlineCss: String?, vararg fileUris: String?) {
+    setCSS(inlineCss, fileUris.toList())
   }
 
   fun setHtml(html: String) {
@@ -139,6 +143,10 @@ internal class PanelDelegate {
 
       lastChangedHtml = changedHtml
       lastHtml = html
+
+      if (lastCssString.isNotEmpty()) {
+        PanelUpdater.setCss(id) // fixes missing styles after reloading
+      }
 
       PanelUpdater.setHtml(id)
     }
