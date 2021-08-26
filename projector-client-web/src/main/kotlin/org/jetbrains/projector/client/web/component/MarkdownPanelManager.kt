@@ -52,7 +52,6 @@ class MarkdownPanelManager(private val zIndexByWindowIdGetter: (Int) -> Int?, pr
 
     companion object {
 
-      // TODO support iframe reloading
       private fun createIFrame(openInExternalBrowser: (String) -> Unit) = (document.createElement("iframe") as HTMLIFrameElement).apply {
         style.apply {
           position = "fixed"
@@ -72,6 +71,8 @@ class MarkdownPanelManager(private val zIndexByWindowIdGetter: (Int) -> Int?, pr
           open()
           close()
         }
+
+        contentDocument!!.oncontextmenu = { false }
 
         // adopted from processLinks.js
         contentDocument!!.onclick = { e ->
