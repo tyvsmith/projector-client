@@ -1,0 +1,60 @@
+name: Run Tests
+on:
+  pull_request:
+    types: [ assigned, opened, synchronize, reopened ]
+    branches: [master]
+jobs:
+  test-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: browser-actions/setup-chrome@latest
+      - uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Clean
+        run: gradle clean
+      - name: Run Desktop
+        run: |
+          export CHROME_BIN=/$(which chromium)
+          export DISPLAY=:99.0
+          Xvfb -ac :99 -screen 0 1920x1080x16 &
+          gradle check
+          ./gradlew :projector-client-web:browserTest
+
+
+  test-mac-os:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Clean
+        run: gradle clean
+      - name: Tests
+        run: |
+          export CHROME_BIN=$(which chrome)
+          gradle check
+          ./gradlew :projector-client-web:browserTest
+
+
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: browser-actions/setup-chrome@latest
+      - uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Clean
+        run: gradle clean
+      - name: Tests
+        run: |
+          $Env:CHROME_BIN = 'c:\hostedtoolcache\windows\chromium\latest\x64\chrome.exe'
+          gradle check
+          ./gradlew :projector-client-web:browserTest
+
