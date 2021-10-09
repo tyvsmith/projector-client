@@ -23,8 +23,11 @@
  */
 package org.jetbrains.projector.intTest.headless.keyboard
 
+import org.junit.jupiter.api.condition.EnabledOnOs
+import org.junit.jupiter.api.condition.OS
 import org.openqa.selenium.Keys
 
+@EnabledOnOs(OS.MAC, OS.LINUX)
 class MobileOnlyButtonsKeyboardTest : AbstractKeyboardTest("mobileOnlyButtons") {
 
   override fun input(vararg keysToSend: CharSequence, ctrl: Boolean, shift: Boolean, f: Keys?, esc: Boolean) {
